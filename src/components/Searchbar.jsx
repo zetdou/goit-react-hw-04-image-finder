@@ -1,46 +1,42 @@
-import { Component } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/Searchbar.module.css";
 
-export default class Searchbar extends Component {
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
+const Searchbar = ({ onSubmit }) => {
+  const [query, setQuery] = useState("");
+
+  const handleChange = (ev) => {
+    setQuery(ev.currentTarget.value);
   };
 
-  state = {
-    query: "",
-  };
-
-  handleChange = (ev) => {
-    this.setState({ query: ev.currentTarget.value });
-  };
-
-  handleSubmit = (ev) => {
+  const handleSubmit = (ev) => {
     ev.preventDefault();
-    this.props.onSubmit(this.state.query);
-    this.setState({ query: "" });
+    onSubmit(query);
+    setQuery("");
   };
 
-  render() {
-    const { query } = this.state;
+  return (
+    <header className={styles.searchbar}>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <button type="submit" className={styles.button}>
+          <span className={styles.buttonLabel}>Search</span>
+        </button>
+        <input
+          className={styles.input}
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          value={query}
+          onChange={handleChange}
+        />
+      </form>
+    </header>
+  );
+};
 
-    return (
-      <header className={styles.searchbar}>
-        <form className={styles.form} onSubmit={this.handleSubmit}>
-          <button type="submit" className={styles.button}>
-            <span className={styles.buttonLabel}>Search</span>
-          </button>
-          <input
-            className={styles.input}
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            value={query}
-            onChange={this.handleChange}
-          />
-        </form>
-      </header>
-    );
-  }
-}
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
+
+export default Searchbar;
